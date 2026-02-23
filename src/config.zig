@@ -49,7 +49,7 @@ auto_run_time_seconds: usize = 120, //seconds
 auto_run_commands: ?[]const []const u8 = &.{"save_session_quiet"}, // a list of simple commands
 
 indent_size: usize = 4,
-tab_width: usize = 8,
+tab_width: usize = 2,
 indent_mode: IndentMode = .auto,
 reflow_width: usize = 76,
 
