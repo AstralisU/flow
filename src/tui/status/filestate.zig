@@ -147,7 +147,13 @@ fn render_normal(self: *Self, plane: *Plane, theme: *const Widget.Theme, auto_sa
         _ = plane.print(" ", .{}) catch {};
     }
     _ = plane.putstr(if (!self.file_exists) "󰽂 " else if (auto_save) "󱑛 " else if (self.file_dirty) "󰆓 " else "") catch {};
-    _ = plane.print("{s}", .{self.name}) catch {};
+    const file_name = if (self.name.len > 0 and self.name[0] == '*')
+        self.name
+    else if (std.mem.lastIndexOfScalar(u8, self.name, '/')) |pos|
+        self.name[pos + 1 ..]
+    else
+        self.name;
+    _ = plane.print("{s}", .{file_name}) catch {};
     return;
 }
 
