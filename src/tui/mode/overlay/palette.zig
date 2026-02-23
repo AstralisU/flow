@@ -27,6 +27,7 @@ pub const Placement = enum {
     top_left,
     top_right,
     primary_cursor,
+    center,
 };
 
 pub const ActivateMode = enum {
@@ -110,7 +111,7 @@ pub fn Create(options: type) type {
                 .mode = try keybind.mode("overlay/palette", allocator, .{
                     .insert_command = "overlay_insert_bytes",
                 }),
-                .placement = if (@hasDecl(options, "placement")) options.placement else .top_center,
+                .placement = if (@hasDecl(options, "placement")) options.placement else .center,
             };
             try self.commands.init(self);
             self.mode.event_handler = EventHandler.to_owned(self);
@@ -205,6 +206,7 @@ pub fn Create(options: type) type {
                 .top_left => self.prepare_resize_top_left(screen, w),
                 .top_right => self.prepare_resize_top_right(screen, w, padding),
                 .primary_cursor => self.prepare_resize_primary_cursor(screen, w, padding),
+                .center => self.prepare_resize_center(screen, w),
             };
         }
 
@@ -246,6 +248,14 @@ pub fn Create(options: type) type {
             const ed = mv.get_active_editor() orelse return self.prepare_resize_top_right(screen, w, padding);
             const cursor = ed.get_primary_abs() orelse return self.prepare_resize_top_right(screen, w, padding);
             return self.prepare_resize_at_y_x(screen, w, cursor.row + 1 + padding.top, cursor.col);
+        }
+
+        fn prepare_resize_center(self: *Self, screen: Widget.Box, w: usize) Widget.Box {
+            const x = if (screen.w > w) (screen.w - w) / 2 else 0;
+            const h = @min(self.items + self.menu.header_count, self.view_rows + self.menu.header_count);
+            const y = if (screen.h > h) (screen.h - h) / 2 else 0;
+            self.view_rows = get_view_rows(screen) -| y;
+            return .{ .y = y, .x = x, .w = w, .h = h };
         }
 
         fn after_resize_menu(self: *Self, _: *Menu.State(*Self), _: Widget.Box) void {

@@ -190,7 +190,9 @@ fn prepare_resize(self: *Self) Widget.Box {
     const w = self.menu_width();
     const x = self.menu_pos_x();
     const h = self.menu.menu.widgets.items.len;
-    return .{ .y = 0, .x = x, .w = w, .h = h };
+    const screen_height = tui.screen().h;
+    const y = if (screen_height > h) (screen_height - h) / 2 else 0;
+    return .{ .y = y, .x = x, .w = w, .h = h };
 }
 
 fn do_resize(self: *Self) void {

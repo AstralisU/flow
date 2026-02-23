@@ -24,7 +24,6 @@ const Self = @This();
 
 pub fn create(allocator: std.mem.Allocator, parent: Plane, event_handler: ?EventHandler, arg: ?[]const u8) @import("widget.zig").CreateError!Widget {
     const style: ?DigitStyle = if (arg) |style| std.meta.stringToEnum(DigitStyle, style) orelse null else null;
-
     var env = std.process.getEnvMap(allocator) catch |e| {
         std.log.err("clock: std.process.getEnvMap failed with {any}", .{e});
         return error.WidgetInitFailed;

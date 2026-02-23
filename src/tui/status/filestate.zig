@@ -140,7 +140,7 @@ fn render_mini_mode(plane: *Plane, theme: *const Widget.Theme) void {
 // 󱑛 Content save cog
 // 󰆔 Content save all
 fn render_normal(self: *Self, plane: *Plane, theme: *const Widget.Theme, auto_save: bool) void {
-    plane.on_styles(styles.italic);
+    if (self.file_dirty) plane.on_styles(styles.bold);
     _ = plane.putstr(" ") catch {};
     if (self.file_icon.len > 0 and tui.config().show_fileicons) {
         self.render_file_icon(plane, theme);
